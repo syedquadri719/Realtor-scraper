@@ -1,9 +1,9 @@
 FROM node:18-bullseye
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_CACHE_DIR=/usr/local/share/.cache/puppeteer
 
-# Install system dependencies required for Puppeteer
+# Install Chromium dependencies
 RUN apt-get update && apt-get install -y \
   wget \
   ca-certificates \
@@ -25,13 +25,15 @@ RUN apt-get update && apt-get install -y \
   libgbm1 \
   libgtk-3-0 \
   --no-install-recommends && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
+  apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY package.json .
-RUN npm install --no-optional puppeteer
+
+# Install Puppeteer (without skipping download)
+RUN npm install
+RUN npx puppeteer browsers install chrome
 
 COPY . .
 
