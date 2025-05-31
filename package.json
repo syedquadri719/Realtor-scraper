@@ -1,7 +1,7 @@
 {
   "name": "realtor-scraper-api",
   "version": "1.0.0",
-  "description": "Unofficial Realtor.com scraper API",
+  "description": "Realtor.com scraper API with Puppeteer",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
