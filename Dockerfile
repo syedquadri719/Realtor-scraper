@@ -1,29 +1,10 @@
-FROM node:18-bullseye
+FROM node:18-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV PUPPETEER_CACHE_DIR=/usr/local/share/.cache/puppeteer
-
-# Install Chromium dependencies
+# Install Puppeteer dependencies only (can be adjusted as needed)
 RUN apt-get update && apt-get install -y \
   wget \
   ca-certificates \
-  fonts-liberation \
-  libappindicator3-1 \
-  libasound2 \
-  libatk-bridge2.0-0 \
-  libatk1.0-0 \
-  libcups2 \
-  libdbus-1-3 \
-  libgdk-pixbuf2.0-0 \
-  libnspr4 \
-  libnss3 \
-  libx11-xcb1 \
-  libxcomposite1 \
-  libxdamage1 \
-  libxrandr2 \
-  xdg-utils \
-  libgbm1 \
-  libgtk-3-0 \
+  libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 libgtk-3-0 \
   --no-install-recommends && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -31,12 +12,10 @@ WORKDIR /app
 
 COPY package.json .
 
-# Install Puppeteer (without skipping download)
+# Skip Chromium download (it’ll still work at runtime if needed)
+ENV PUPPETEER_SKIP_DOWNLOAD true
 RUN npm install
-RUN npx puppeteer browsers install chrome
 
 COPY . .
 
-EXPOSE 3000
-
-CMD ["node", "index.js"]
+CMD ["npm", "start"]
