@@ -1,8 +1,9 @@
 FROM node:18-bullseye
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 
-# Install Puppeteer dependencies
+# Install system dependencies required for Puppeteer
 RUN apt-get update && apt-get install -y \
   wget \
   ca-certificates \
@@ -29,9 +30,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY . .
+COPY package.json .
+RUN npm install --no-optional puppeteer
 
-RUN npm install
+COPY . .
 
 EXPOSE 3000
 
